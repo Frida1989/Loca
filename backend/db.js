@@ -23,69 +23,68 @@ async function connectDatabase() {
         check_in DATE NOT NULL,
         check_out DATE NOT NULL
       )
-        
     `);
 
     await database.run(`
-  CREATE TABLE IF NOT EXISTS stays (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    city TEXT NOT NULL,
-    description TEXT,
-    room_type TEXT NOT NULL,
-    image_url TEXT
-  )
-`);
+      CREATE TABLE IF NOT EXISTS stays (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        city TEXT NOT NULL,
+        description TEXT,
+        room_type TEXT NOT NULL,
+        image_url TEXT
+      )
+    `);
 
     const result = await database.get("SELECT COUNT(*) AS count FROM stays");
 
     if (result.count === 0) {
       await database.exec(`
-    INSERT INTO stays (name, city, description, room_type, image_url)
-    VALUES
-      (
-        'Canal House',
-        'Amsterdam',
-        'Wake up near the canals and experience local Amsterdam life.',
-        'Double',
-        '/images/amsterdam.jpg'
-      ),
-      (
-        'Nordic Hideaway',
-        'Stockholm',
-        'A peaceful Scandinavian home close to local cafes and city life.',
-        'Single',
-        '/images/stockholm.jpg'
-      ),
-      (
-        'Bosphorus Home',
-        'Istanbul',
-        'Discover Istanbul through a warm and welcoming local home.',
-        'Double',
-        '/images/istanbul.jpg'
-      ),
-      (
-        'The Little Loft',
-        'Copenhagen',
-        'Explore Copenhagen from a cozy loft in a creative neighborhood.',
-        'Studio',
-        '/images/copenhagen.jpg'
-      ),
-      (
-        'Parisian Corner',
-        'Paris',
-        'Enjoy a charming stay surrounded by Parisian streets and cafes.',
-        'Double',
-        '/images/paris.jpg'
-      ),
-      (
-        'Lisbon Living',
-        'Lisbon',
-        'Experience colorful streets and relaxed local life in Lisbon.',
-        'Single',
-        '/images/lisbon.jpg'
-      );
-  `);
+        INSERT INTO stays (name, city, description, room_type, image_url)
+        VALUES
+          (
+            'Canal House',
+            'Amsterdam',
+            'Where the neighbors know your coffee order. Wake up to canal views, bicycle bells and Stroop, the neighborhood cat who thinks he owns the place. Fun fact: Every Friday, the neighbors meet for canal side coffee. Bring a story, leave with three new friends.',
+            'Double',
+            '/images/amsterdam.jpg'
+          ),
+          (
+            'Nordic Hideaway',
+            'Stockholm',
+            'Come for the calm. Stay for the fika. Enjoy slow mornings, cozy candles and cinnamon buns from the neighbor downstairs. Fun fact: The host''s grandmother teaches guests to bake kanelbullar, but her secret ingredient remains a mystery.',
+            'Single',
+            '/images/stockholm.jpg'
+          ),
+          (
+            'Bosphorus Home',
+            'Istanbul',
+            'One cup of tea is never just one. Discover colorful streets, hidden markets and curious cats while learning Turkish over breakfast. Fun fact: The local shopkeeper teaches guests a new Turkish phrase every day.',
+            'Double',
+            '/images/istanbul.jpg'
+          ),
+          (
+            'The Little Loft',
+            'Copenhagen',
+            'A little hygge. A lot of personality. Borrow a bicycle, explore local design shops or join Sunday yoga with the neighbors. Fun fact: The community bookshelf lets you exchange stories with people you have never met.',
+            'Studio',
+            '/images/copenhagen.jpg'
+          ),
+          (
+            'Parisian Corner',
+            'Paris',
+            'Your baguette era starts here. Stay above a flower shop and discover the little cafes where locals start their mornings. Fun fact: The florist leaves a mystery flower outside your door every Monday.',
+            'Double',
+            '/images/paris.jpg'
+          ),
+          (
+            'Lisbon Living',
+            'Lisbon',
+            'Sunny mornings and a dog named Pastel. Wander through colorful streets, discover hidden viewpoints and enjoy long sunset conversations. Fun fact: Every Thursday, the neighbors host a tiny music night with guitars, pastries and questionable singing.',
+            'Single',
+            '/images/lisbon.jpg'
+          );
+      `);
 
       console.log("6 sample stays added");
     }

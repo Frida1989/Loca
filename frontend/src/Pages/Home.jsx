@@ -21,15 +21,7 @@ function Home({ stays }) {
     <main className="home">
       {/* HERO SECTION */}
       <section className="home__hero">
-        <div className="home__header">
-          <Link to="/" className="home__logo">
-            loca.
-          </Link>
-
-          <Link to="/about" className="home__about-link">
-            Our Story
-          </Link>
-        </div>
+        <div className="home__header"></div>
 
         <div className="home__hero-content">
           <h1 className="home__title">

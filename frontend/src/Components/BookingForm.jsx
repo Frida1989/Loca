@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { createBooking } from "../services/BookingApi.js";
+import Confirmation from "../Pages/Confirmation.jsx";
 
 function BookingForm({ selectedStay, closeForm }) {
   const [roomType, setRoomType] = useState("");
-  const [guestName, setGuestName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [checkIn, setCheckIn] = useState("");
@@ -10,8 +13,37 @@ function BookingForm({ selectedStay, closeForm }) {
   const [error, setError] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  const [bookingId, setBookingId] = useState(null);
+  const [savedBooking, setSavedBooking] = useState(null);
+
+  // Get today's date
+  const today = new Date();
+
+  const todayString = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  // Check-out must be at least one day after check-in
+  const minimumCheckOut = checkIn ? new Date(checkIn + "T12:00:00") : null;
+
+  if (minimumCheckOut) {
+    minimumCheckOut.setDate(minimumCheckOut.getDate() + 1);
+  }
+
+  const minimumCheckOutString = minimumCheckOut
+    ? [
+        minimumCheckOut.getFullYear(),
+        String(minimumCheckOut.getMonth() + 1).padStart(2, "0"),
+        String(minimumCheckOut.getDate()).padStart(2, "0"),
+      ].join("-")
+    : todayString;
+
+  // Clear all form fields
   function resetForm() {
-    setGuestName("");
+    setFirstName("");
+    setLastName("");
     setRoomType("");
     setEmail("");
     setPhoneNumber("");
@@ -19,11 +51,19 @@ function BookingForm({ selectedStay, closeForm }) {
     setCheckOut("");
     setError("");
     setFormSubmitted(false);
+    setBookingId(null);
+    setSavedBooking(null);
   }
 
-  function handleSave(e) {
+  // Handle booking form submission
+  async function handleSave(e) {
     e.preventDefault();
     setError("");
+
+    if (checkIn < todayString) {
+      setError("Check-in cannot be in the past.");
+      return;
+    }
 
     if (checkOut <= checkIn) {
       setError("Check-out must be after check-in.");
@@ -32,43 +72,39 @@ function BookingForm({ selectedStay, closeForm }) {
 
     const bookingData = {
       stay_id: selectedStay.id,
-      guest_name: guestName,
-      email: email,
-      phone: phoneNumber,
+      first_name: firstName.trim(),
+      last_name: lastName.trim(),
+      email: email.trim(),
+      phone: phoneNumber.trim(),
       room_type: roomType,
       check_in: checkIn,
       check_out: checkOut,
     };
 
-    console.log("Booking form test:", bookingData);
+    try {
+      const result = await createBooking(bookingData);
 
-    // POST to backend will be added later.
-    setFormSubmitted(true);
+      setBookingId(result.bookingId);
+      setSavedBooking(bookingData);
+      setFormSubmitted(true);
+    } catch (error) {
+      setError(error.message);
+    }
   }
-
+  // Reset and close the form
   function handleCancel() {
     resetForm();
     closeForm();
   }
 
-  if (formSubmitted) {
+  if (formSubmitted && savedBooking) {
     return (
-      <section className="booking-form__success">
-        <h2>Form validated!</h2>
-        <p>
-          Your booking details for {selectedStay.name}
-          are ready to be sent.
-        </p>
-        <p>This is a test. No booking has been saved yet.</p>
-
-        <button
-          type="button"
-          className="button button-primary"
-          onClick={handleCancel}
-        >
-          Close
-        </button>
-      </section>
+      <Confirmation
+        bookingId={bookingId}
+        selectedStay={selectedStay}
+        bookingData={savedBooking}
+        onClose={handleCancel}
+      />
     );
   }
 
@@ -83,6 +119,7 @@ function BookingForm({ selectedStay, closeForm }) {
       </div>
 
       <form className="booking-form" onSubmit={handleSave}>
+        {/* ROOM TYPE */}
         <div className="form-group">
           <label className="form-label" htmlFor="roomType">
             Room type *
@@ -101,22 +138,38 @@ function BookingForm({ selectedStay, closeForm }) {
           </select>
         </div>
 
+        {/* GUEST NAME */}
+
         <div className="form-group">
-          <label className="form-label" htmlFor="guest-name">
-            Guest name *
+          <label className="form-label" htmlFor="firstName">
+            First name *
           </label>
 
           <input
-            id="guest-name"
+            id="firstName"
             className="form-input"
             type="text"
-            value={guestName}
-            placeholder="Your full name"
-            onChange={(e) => setGuestName(e.target.value)}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label" htmlFor="lastName">
+            Last name *
+          </label>
+
+          <input
+            id="lastName"
+            className="form-input"
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             required
           />
         </div>
 
+        {/* EMAIL */}
         <div className="form-group">
           <label className="form-label" htmlFor="guest-email">
             Email *
@@ -133,6 +186,7 @@ function BookingForm({ selectedStay, closeForm }) {
           />
         </div>
 
+        {/* PHONE */}
         <div className="form-group">
           <label className="form-label" htmlFor="phoneNumber">
             Mobile *
@@ -149,6 +203,7 @@ function BookingForm({ selectedStay, closeForm }) {
           />
         </div>
 
+        {/* CHECK-IN */}
         <div className="form-group">
           <label className="form-label" htmlFor="checkIn">
             Check-in *
@@ -159,14 +214,23 @@ function BookingForm({ selectedStay, closeForm }) {
             className="form-input"
             type="date"
             value={checkIn}
+            min={todayString}
             onChange={(e) => {
-              setCheckIn(e.target.value);
+              const newCheckIn = e.target.value;
+
+              setCheckIn(newCheckIn);
+
+              if (checkOut && checkOut <= newCheckIn) {
+                setCheckOut("");
+              }
+
               setError("");
             }}
             required
           />
         </div>
 
+        {/* CHECK-OUT */}
         <div className="form-group">
           <label className="form-label" htmlFor="checkOut">
             Check-out *
@@ -177,7 +241,7 @@ function BookingForm({ selectedStay, closeForm }) {
             className="form-input"
             type="date"
             value={checkOut}
-            min={checkIn || undefined}
+            min={minimumCheckOutString}
             onChange={(e) => {
               setCheckOut(e.target.value);
               setError("");
@@ -186,12 +250,14 @@ function BookingForm({ selectedStay, closeForm }) {
           />
         </div>
 
+        {/* ERROR MESSAGE */}
         {error && (
           <p className="form-error" role="alert">
             {error}
           </p>
         )}
 
+        {/* BUTTONS */}
         <div className="booking-form__actions">
           <button
             className="button button-secondary"

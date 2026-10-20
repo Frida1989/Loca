@@ -40,6 +40,71 @@ async function startServer() {
       }
     });
 
+    app.post("/api/bookings", async (req, res) => {
+      try {
+        const {
+          stay_id,
+          first_name,
+          last_name,
+          email,
+          phone,
+          room_type,
+          check_in,
+          check_out,
+        } = req.body;
+
+        // Check required fields
+        if (
+          !stay_id ||
+          !first_name ||
+          !last_name ||
+          !email ||
+          !room_type ||
+          !check_in ||
+          !check_out
+        ) {
+          return res.status(400).json({
+            error: "Please fill in all required fields",
+          });
+        }
+
+        // Check booking dates
+        if (check_out <= check_in) {
+          return res.status(400).json({
+            error: "Check-out must be after check-in",
+          });
+        }
+
+        // Save booking to SQLite
+        const result = await db.run(
+          `INSERT INTO booking
+      (stay_id, first_name, last_name, email, phone, room_type, check_in, check_out)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            stay_id,
+            first_name,
+            last_name,
+            email,
+            phone,
+            room_type,
+            check_in,
+            check_out,
+          ],
+        );
+
+        res.status(201).json({
+          message: "Booking created successfully!",
+          bookingId: result.lastID,
+        });
+      } catch (error) {
+        console.error("Booking error:", error.message);
+
+        res.status(500).json({
+          error: "Could not create booking",
+        });
+      }
+    });
+
     app.listen(PORT, () => {
       console.log(`Server running at http://localhost:${PORT}`);
     });

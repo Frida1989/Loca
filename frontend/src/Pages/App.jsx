@@ -5,8 +5,8 @@ import "./App.css";
 
 import Home from "./Home.jsx";
 import About from "./About.jsx";
-import StayDetails from "../Components/StayDetails.jsx";
 import Layout from "../Layouts/Layouts.jsx";
+import NotFound from "./NotFound.jsx";
 
 import { fetchStays } from "../services/StayApi.js";
 
@@ -30,12 +30,8 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home stays={stays} />} />
-
         <Route path="/about" element={<About />} />
-
-        <Route path="/stay/:stayId" element={<StayDetails stays={stays} />} />
-
-        <Route path="*" element={<h2>Page not found</h2>} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

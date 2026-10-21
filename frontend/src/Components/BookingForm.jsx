@@ -41,7 +41,7 @@ function BookingForm({ selectedStay, closeForm }) {
       ].join("-")
     : todayString;
 
-  // Clear all form fields
+  // Reset form after cancelling or closing the confirmation.
   function resetForm() {
     setFirstName("");
     setLastName("");
@@ -61,6 +61,21 @@ function BookingForm({ selectedStay, closeForm }) {
     e.preventDefault();
     if (isSubmitting) return;
     setError("");
+
+    if (!roomType) {
+      setError("Please select a room type.");
+      return;
+    }
+
+    if (!firstName.trim() || !lastName.trim() || !email.trim()) {
+      setError("Please complete all required guest details.");
+      return;
+    }
+
+    if (!checkIn || !checkOut) {
+      setError("Please select your travel dates.");
+      return;
+    }
 
     if (checkIn < todayString) {
       setError("Check-in cannot be in the past.");
@@ -87,6 +102,8 @@ function BookingForm({ selectedStay, closeForm }) {
 
     try {
       const result = await createBooking(bookingData);
+
+      if (!result.bookingId) throw new Error("Booking reference is missing.");
 
       setBookingId(result.bookingId);
       setSavedBooking(bookingData);
@@ -266,6 +283,7 @@ function BookingForm({ selectedStay, closeForm }) {
         {/* BUTTONS */}
         <div className="booking-form__actions">
           <button
+            disabled={isSubmitting}
             className="button button-secondary"
             type="button"
             onClick={handleCancel}

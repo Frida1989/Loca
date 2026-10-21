@@ -13,13 +13,18 @@ import { fetchStays } from "../services/StayApi.js";
 
 function App() {
   const [stays, setStays] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const getAllStays = async () => {
     try {
       const data = await fetchStays();
       setStays(data);
     } catch (error) {
+      setError("Could not load stays. Please try again later.");
       console.log("Could not load stays:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,7 +35,10 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<Home stays={stays} />} />
+        <Route
+          path="/"
+          element={<Home stays={stays} loading={loading} error={error} />}
+        />
         <Route path="/about" element={<About />} />
         <Route path="/admin-secret-bookings" element={<Admin />} />
         <Route path="*" element={<NotFound />} />

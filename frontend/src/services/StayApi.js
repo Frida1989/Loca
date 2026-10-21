@@ -1,18 +1,12 @@
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export const fetchStays = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/api/stays`);
+  // Get stays from the Express API.
+  const response = await fetch(`${BASE_URL}/api/stays`);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch stays");
-    }
-
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.log("GET stays error:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error("Could not load stays. Please try again.");
   }
+
+  return await response.json();
 };

@@ -7,6 +7,7 @@ import Home from "./Home.jsx";
 import About from "./About.jsx";
 import Layout from "../Layouts/Layouts.jsx";
 import NotFound from "./NotFound.jsx";
+import Admin from "./Admin.jsx";
 
 import { fetchStays } from "../services/StayApi.js";
 
@@ -31,6 +32,7 @@ function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<Home stays={stays} />} />
         <Route path="/about" element={<About />} />
+        <Route path="/admin-secret-bookings" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

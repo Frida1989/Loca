@@ -21,15 +21,7 @@ function Home({ stays }) {
     <main className="home">
       {/* HERO SECTION */}
       <section className="home__hero">
-        <div className="home__header">
-          <Link to="/" className="home__logo">
-            loca.
-          </Link>
-
-          <Link to="/about" className="home__about-link">
-            Our Story
-          </Link>
-        </div>
+        <div className="home__header"></div>
 
         <div className="home__hero-content">
           <h1 className="home__title">
@@ -59,6 +51,21 @@ function Home({ stays }) {
         </header>
 
         <StayList stays={stays} onSelectStay={handleSelectStay} />
+      </section>
+
+      {/* THE LOCA WAY */}
+      <section className="home__story">
+        <p className="home__story-eyebrow">THE LOCA WAY</p>
+
+        <h2 className="home__story-title">
+          A little less tourist.
+          <br />A little more local.
+        </h2>
+
+        <p className="home__story-text">
+          Discover places with personality, explore new neighborhoods, and
+          experience cities beyond the ordinary.
+        </p>
       </section>
 
       {/* BOOKING MODAL */}

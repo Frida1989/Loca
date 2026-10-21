@@ -11,10 +11,6 @@ function Layout() {
           </Link>
 
           <div className="site-nav__links">
-            <Link to="/" className="site-nav__link">
-              Explore
-            </Link>
-
             <Link to="/about" className="site-nav__link">
               Our Story
             </Link>

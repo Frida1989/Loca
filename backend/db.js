@@ -47,47 +47,52 @@ async function connectDatabase() {
             'Amsterdam',
             'Where the neighbors know your coffee order. Wake up to canal views, bicycle bells and Stroop, the neighborhood cat who thinks he owns the place. Fun fact: Every Friday, the neighbors meet for canal side coffee. Bring a story, leave with three new friends.',
             'Double',
-            '/images/amsterdam.jpg'
+          '/images/amsterdam.webp'
           ),
           (
             'Nordic Hideaway',
             'Stockholm',
             'Come for the calm. Stay for the fika. Enjoy slow mornings, cozy candles and cinnamon buns from the neighbor downstairs. Fun fact: The host''s grandmother teaches guests to bake kanelbullar, but her secret ingredient remains a mystery.',
             'Single',
-            '/images/stockholm.jpg'
+            '/images/stockholm.webp'
           ),
           (
             'Bosphorus Home',
             'Istanbul',
             'One cup of tea is never just one. Discover colorful streets, hidden markets and curious cats while learning Turkish over breakfast. Fun fact: The local shopkeeper teaches guests a new Turkish phrase every day.',
             'Double',
-            '/images/istanbul.jpg'
+            '/images/istanbul.webp'
           ),
           (
             'The Little Loft',
             'Copenhagen',
             'A little hygge. A lot of personality. Borrow a bicycle, explore local design shops or join Sunday yoga with the neighbors. Fun fact: The community bookshelf lets you exchange stories with people you have never met.',
             'Studio',
-            '/images/copenhagen.jpg'
+            '/images/copenhagen.webp'
           ),
           (
             'Parisian Corner',
             'Paris',
             'Your baguette era starts here. Stay above a flower shop and discover the little cafes where locals start their mornings. Fun fact: The florist leaves a mystery flower outside your door every Monday.',
             'Double',
-            '/images/paris.jpg'
+            '/images/paris.webp'
           ),
           (
             'Lisbon Living',
             'Lisbon',
             'Sunny mornings and a dog named Pastel. Wander through colorful streets, discover hidden viewpoints and enjoy long sunset conversations. Fun fact: Every Thursday, the neighbors host a tiny music night with guitars, pastries and questionable singing.',
             'Single',
-            '/images/lisbon.jpg'
+            '/images/lisbon.webp'
           );
       `);
 
       console.log("6 sample stays added");
-    }
+    } // Fix image URLs in existing database
+    // Fix image URLs
+    await database.run(`
+  UPDATE stays
+  SET image_url = '/images/' || LOWER(city) || '.webp'
+`);
 
     console.log("Database is connected");
     return database;

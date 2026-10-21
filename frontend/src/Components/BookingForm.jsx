@@ -12,6 +12,7 @@ function BookingForm({ selectedStay, closeForm }) {
   const [checkOut, setCheckOut] = useState("");
   const [error, setError] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [bookingId, setBookingId] = useState(null);
   const [savedBooking, setSavedBooking] = useState(null);
@@ -58,6 +59,7 @@ function BookingForm({ selectedStay, closeForm }) {
   // Handle booking form submission
   async function handleSave(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     setError("");
 
     if (checkIn < todayString) {
@@ -81,6 +83,8 @@ function BookingForm({ selectedStay, closeForm }) {
       check_out: checkOut,
     };
 
+    setIsSubmitting(true);
+
     try {
       const result = await createBooking(bookingData);
 
@@ -89,6 +93,8 @@ function BookingForm({ selectedStay, closeForm }) {
       setFormSubmitted(true);
     } catch (error) {
       setError(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
   // Reset and close the form
@@ -267,8 +273,12 @@ function BookingForm({ selectedStay, closeForm }) {
             Cancel
           </button>
 
-          <button className="button button-primary" type="submit">
-            Confirm Booking
+          <button
+            className="button button-primary"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Confirming..." : "Confirm Booking"}
           </button>
         </div>
       </form>

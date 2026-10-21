@@ -1,14 +1,18 @@
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export async function createBooking(bookingData) {
-  const response = await fetch("http://localhost:5000/api/bookings", {
+  // Save the booking in SQLite through Express.
+  const response = await fetch(`${BASE_URL}/api/bookings`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(bookingData),
   });
 
   if (!response.ok) {
-    throw new Error("Could not create booking");
+    const data = await response.json().catch(() => ({}));
+    throw new Error(
+      data.error || "Could not create booking. Please try again.",
+    );
   }
 
   return await response.json();

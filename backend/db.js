@@ -87,12 +87,14 @@ async function connectDatabase() {
       `);
 
       console.log("6 sample stays added");
-    } // Fix image URLs in existing database
-    // Fix image URLs
+    }
+
+    // Existing stays now offer both room types; bookings stay unchanged.
     await database.run(`
-  UPDATE stays
-  SET image_url = '/images/' || LOWER(city) || '.webp'
-`);
+      UPDATE stays
+      SET room_type = 'Single,Double'
+      WHERE room_type IN ('Single', 'Double', 'Studio')
+    `);
 
     console.log("Database is connected");
     return database;

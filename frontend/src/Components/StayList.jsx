@@ -6,7 +6,8 @@ function StayList({ stays = [], onSelectStay }) {
           <article className="stay-card">
             <img
               src={stay.image_url}
-              alt={stay.name}
+              alt={`${stay.name} accommodation in ${stay.city}`}
+              loading="lazy"
               className="stay-card__image"
             />
 
@@ -17,7 +18,7 @@ function StayList({ stays = [], onSelectStay }) {
 
               <p className="stay-card__description">{stay.description}</p>
 
-              <p className="stay-card__room-type">{stay.room_type} room</p>
+              <p className="stay-card__room-type">Rooms: Single / Double</p>
 
               <button
                 type="button"

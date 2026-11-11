@@ -12,3 +12,31 @@ export async function getAllBookings() {
 
   return data;
 }
+
+export async function deleteBooking(id) {
+  const response = await fetch(`${API_URL}/api/bookings/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not delete booking");
+  }
+}
+
+export async function updateBooking(id, updatedBooking) {
+  const response = await fetch(`${API_URL}/api/bookings/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedBooking),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Could not update booking");
+  }
+
+  return data;
+}

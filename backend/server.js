@@ -21,7 +21,11 @@ async function startServer() {
         return res.status(403).json({ error: "Admin access is disabled" });
       }
       try {
-        const bookings = await db.all("SELECT * FROM booking");
+        const bookings = await db.all(`
+  SELECT booking.*, stays.name AS stay_name, stays.city AS stay_city
+  FROM booking
+  JOIN stays ON booking.stay_id = stays.id
+`);
 
         res.json(bookings);
       } catch (err) {
@@ -171,6 +175,86 @@ async function startServer() {
 
         res.status(500).json({
           error: "Could not create booking",
+        });
+      }
+    });
+
+    app.delete("/api/bookings/:id", async (req, res) => {
+      try {
+        const result = await db.run("DELETE FROM booking WHERE id = ?", [
+          req.params.id,
+        ]);
+
+        if (result.changes === 0) {
+          return res.status(404).json({
+            error: "Booking not found",
+          });
+        }
+
+        res.json({ message: "Booking deleted" });
+      } catch (error) {
+        res.status(500).json({
+          error: "Could not delete booking",
+        });
+      }
+    });
+
+    app.put("/api/bookings/:id", async (req, res) => {
+      try {
+        const { room_type, check_in, check_out } = req.body;
+
+        // Check the booking exists
+        const booking = await db.get("SELECT * FROM booking WHERE id = ?", [
+          req.params.id,
+        ]);
+
+        if (!booking) {
+          return res.status(404).json({
+            error: "Booking not found",
+          });
+        }
+
+        // Check the new values
+        if (
+          !["Single", "Double"].includes(room_type) ||
+          !check_in ||
+          !check_out ||
+          check_out <= check_in
+        ) {
+          return res.status(400).json({
+            error: "Please check the room type and dates",
+          });
+        }
+
+        // Check if another booking uses the room
+        const existingBooking = await db.get(
+          `SELECT id FROM booking
+       WHERE stay_id = ?
+       AND room_type = ?
+       AND id != ?
+       AND check_in < ?
+       AND check_out > ?`,
+          [booking.stay_id, room_type, req.params.id, check_out, check_in],
+        );
+
+        if (existingBooking) {
+          return res.status(409).json({
+            error: "This room is already booked for these dates",
+          });
+        }
+
+        // Update the booking
+        await db.run(
+          `UPDATE booking
+       SET room_type = ?, check_in = ?, check_out = ?
+       WHERE id = ?`,
+          [room_type, check_in, check_out, req.params.id],
+        );
+
+        res.json({ message: "Booking updated" });
+      } catch (error) {
+        res.status(500).json({
+          error: "Could not update booking",
         });
       }
     });

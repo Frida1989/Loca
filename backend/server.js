@@ -180,6 +180,9 @@ async function startServer() {
     });
 
     app.delete("/api/bookings/:id", async (req, res) => {
+      if (process.env.NODE_ENV === "production") {
+        return res.status(403).json({ error: "Admin access is disabled" });
+      }
       try {
         const result = await db.run("DELETE FROM booking WHERE id = ?", [
           req.params.id,
@@ -200,6 +203,9 @@ async function startServer() {
     });
 
     app.put("/api/bookings/:id", async (req, res) => {
+      if (process.env.NODE_ENV === "production") {
+        return res.status(403).json({ error: "Admin access is disabled" });
+      }
       try {
         const { room_type, check_in, check_out } = req.body;
 

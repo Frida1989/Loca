@@ -1,150 +1,148 @@
-
-
-# loca.
+# Loca.
 
 ### Stay local. Feel connected.
 
-**A thoughtfully designed local-stay booking experience.**  
-Discover places with personality, explore cities beyond the usual landmarks, and book your next stay in a few simple steps.
+Loca is a full-stack booking website I built as a school project and later continued improving for my portfolio.
 
----
+The idea was to create a simple place where users can explore stays in different cities and make a reservation.
 
-## More than a place to stay.
+I wanted to focus on the design and user experience, while also learning how to connect a React frontend to a backend and database.
 
-Travel feels different when a city begins to feel familiar. **Loca.** is a concept booking platform built around that idea: characterful stays, local stories, and a clear, effortless reservation flow.
+## What you can do
 
-Created as a full-stack school project, Loca brings together an editorial, travel-inspired interface and a practical booking system powered by React, Express, and SQLite. The focus is on making the experience feel simple for travelers while understanding how frontend interfaces communicate with a real backend and database.
+- Explore six stays in different cities.
+- View photos and descriptions of each stay.
+- Select a stay and open a booking form.
+- Choose between Single and Double rooms.
+- Enter guest details and select check-in and check-out dates.
+- Get a booking confirmation with a reference number.
+- Use the website on desktop and mobile.
 
-## The experience
+The booking form checks that the dates are valid. The backend also checks room availability to help prevent double bookings.
 
-**01 — Discover**  
-Browse a curated collection of six sample stays, each with a distinct personality and destination.
+## Admin Dashboard
 
-**02 — Choose**  
-Select a stay and open a focused booking form without leaving the page.
+I also built a simple admin page to manage reservations.
 
-**03 — Book**  
-Enter guest details, choose a room type, and select valid check-in and check-out dates.
+The admin page is available locally through a separate route:
 
-**04 — Feel connected**  
-Submit your reservation and receive a confirmation with a booking reference returned by the backend.
+`/admin-secret-bookings`
 
-## Designed with intention
+From this page, I can:
 
-- **Editorial, image-led design** — photography, expressive typography, and a warm visual identity.
-- **Clarity first** — a short journey from exploring a stay to booking it.
-- **Responsive foundations** — layouts designed for desktop, tablet, and mobile.
-- **Accessible-minded UI** — semantic HTML, labeled fields, validation messages, and visible keyboard focus. Accessibility testing and modal keyboard behavior are still being refined.
-- **Real data flow** — accommodation data and bookings are handled through a REST API, not hardcoded UI state.
+- View all bookings, including the guest, stay, city, room type and dates.
+- Edit the room type and booking dates.
+- Delete a booking.
 
-## Built with
+The admin page uses the same Express API and SQLite database as the booking form.
 
-| Frontend | Backend | Data & workflow |
-| --- | --- | --- |
-| React | Node.js | SQLite |
-| Vite | Express | REST API / `fetch()` |
-| React Router | CORS | Git & GitHub |
-| JavaScript & CSS | | |
+**A note about security:** The admin page is not linked in the public navigation. Since I haven't added authentication, the admin booking endpoints (GET, PUT and DELETE) are disabled in production. The admin features are intended for local use only.
 
-## How it works
+## Tech Stack
 
-```text
-Traveler
-   │
-   ▼
-React interface
-   │
-   ├── GET  /api/stays ───────► Express ───► SQLite (stays)
-   │
-   └── POST /api/bookings ────► Express ───► SQLite (booking)
-                                    │
-                                    ▼
-                         Booking confirmation ID
-                                    │
-                                    ▼
-                            React confirmation
-```
+**Frontend**
+- React
+- JavaScript
+- Vite
+- React Router
+- CSS
 
-### Current API
+**Backend**
+- Node.js
+- Express
+- REST API
+
+**Database**
+- SQLite
+
+**Tools**
+- VS Code
+- Git & GitHub
+- Postman
+
+## How It Works
+
+1. React fetches the available stays from the backend.
+2. The user selects a stay and fills in the booking form.
+3. The form sends a POST request to the Express API.
+4. The backend validates the booking and saves it in SQLite if the room is available.
+5. React displays the booking confirmation and reference number.
+
+The admin page also communicates with the backend to retrieve, update and delete bookings.
+
+## API Endpoints
 
 | Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `GET` | `/api/stays` | Retrieve the six sample stays |
-| `POST` | `/api/bookings` | Create a booking and return its reference |
-| `GET` | `/api/bookings` | Retrieve bookings (backend endpoint; admin UI is not part of the finished public experience) |
+|---|---|---|
+| GET | `/api/stays` | Get all stays |
+| POST | `/api/bookings` | Create a booking |
+| GET | `/api/bookings` | View all bookings (local admin) |
+| PUT | `/api/bookings/:id` | Update a booking (local admin) |
+| DELETE | `/api/bookings/:id` | Delete a booking (local admin) |
 
-## Project structure
+## Run Locally
 
-```text
-Loca/
-├── backend/
-│   ├── server.js
-│   ├── db.js
-│   └── booking.db
-└── frontend/
-    ├── public/
-    │   └── images/
-    └── src/
-        ├── Components/
-        │   ├── BookingForm.jsx
-        │   └── StayList.jsx
-        ├── Layouts/
-        │   └── Layouts.jsx
-        ├── Pages/
-        │   ├── App.jsx
-        │   ├── App.css
-        │   ├── Home.jsx
-        │   ├── About.jsx
-        │   ├── Confirmation.jsx
-        │   └── NotFound.jsx
-        └── services/
-            ├── StayApi.js
-            └── BookingApi.js
+You need Node.js and npm installed.
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/Frida1989/Loca.git
+cd Loca
 ```
 
-*The structure above highlights the main public-facing files; additional work-in-progress files may exist.*
+**2. Start the backend**
 
-## Run locally
+Open a terminal:
 
-**Requirements:** Node.js and npm.
+```bash
+cd backend
+npm install
+node server.js
+```
 
-1. Clone the repository and open it in your editor.
-2. Start the backend:
+The backend runs on `http://localhost:5000`.
 
-   ```bash
-   cd backend
-   npm install
-   node server.js
-   ```
+The SQLite database is initialized locally, with sample stays added when the stays table is empty.
 
-3. In a second terminal, start the frontend:
+**3. Start the frontend**
 
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+Open a second terminal:
 
-4. Open the local URL printed by Vite (usually `http://localhost:5173`).
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-The frontend expects the backend on `http://localhost:5000`. The SQLite database is initialized by the backend, including sample stays when the stays table is empty.
+Open `http://localhost:5173` in your browser.
 
-## What I learned
+## What I Learned
 
-Building Loca has been an opportunity to connect visual design decisions with real application behavior:
+This project helped me understand how the frontend, backend and database work together.
 
-- Fetching and rendering data from an Express API in React.
-- Managing component state and passing the selected stay into a booking form.
-- Validating dates and collecting booking information before submission.
-- Sending POST requests, persisting records in SQLite, and displaying the returned booking ID.
-- Separating React components, API services, and backend responsibilities.
+Some of the things I practiced:
 
-## Still evolving
+- Working with React components, props and state.
+- Fetching data from an API and displaying it in React.
+- Building forms and validating user input.
+- Sending GET, POST, PUT and DELETE requests.
+- Saving and updating data in SQLite.
+- Handling errors and displaying booking confirmations.
+- Improving responsive design and typography.
+- Using Git branches and GitHub to manage my project.
 
-Loca is an ongoing learning and portfolio project. Future improvements include more refined motion and accessibility, deeper booking feedback, a polished deployment, and optional booking-management features.
+One of the most interesting parts was seeing how a booking made in the frontend could be saved in the database and then displayed on a separate admin page.
+
+## Future Improvements
+
+There are still things I would like to work on:
+
+- Improve accessibility and keyboard interaction.
+- Add authentication to the admin dashboard.
+- Add email booking confirmations.
+- Improve the deployed database setup for persistent bookings.
 
 ---
 
-Built as a full-stack learning project with a focus on frontend development and thoughtful UX/UI.
-
-
+Made with ♥ by Frida Pakdaman

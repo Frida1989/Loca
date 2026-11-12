@@ -8,6 +8,16 @@ The idea was to create a simple place where users can explore stays in different
 
 I wanted to focus on the design and user experience, while also learning how to connect a React frontend to a backend and database.
 
+## Live Demo
+
+Loca is live and available to explore.
+
+🌐 [View Live Website](https://loca-stays.netlify.app/)
+
+This is a portfolio project for demonstration purposes.
+No real accommodation bookings are made.
+Please use fictional contact details when testing.
+
 ## What you can do
 
 - Explore six stays in different cities.
@@ -34,7 +44,11 @@ From this page, I can:
 - Edit the room type and booking dates.
 - Delete a booking.
 
-The admin page uses the same Express API and SQLite database as the booking form.
+The admin dashboard works with the local Express API
+and SQLite database during development.
+
+In production, booking creation is available,
+but admin endpoints are disabled for security reasons.
 
 **A note about security:** The admin page is not linked in the public navigation. Since I haven't added authentication, the admin booking endpoints (GET, PUT and DELETE) are disabled in production. The admin features are intended for local use only.
 
@@ -59,6 +73,11 @@ The admin page uses the same Express API and SQLite database as the booking form
 - VS Code
 - Git & GitHub
 - Postman
+- 
+- **Deployment**
+- Netlify – Frontend
+- Railway – Backend
+- Railway Volume – Persistent SQLite database storage
 
 ## How It Works
 
@@ -141,7 +160,7 @@ There are still things I would like to work on:
 - Improve accessibility and keyboard interaction.
 - Add authentication to the admin dashboard.
 - Add email booking confirmations.
-- Improve the deployed database setup for persistent bookings.
+
 
 ---
 

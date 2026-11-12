@@ -5,7 +5,9 @@ const path = require("path");
 async function connectDatabase() {
   try {
     const database = await open({
-      filename: path.join(__dirname, "booking.db"),
+      filename: process.env.RAILWAY_VOLUME_MOUNT_PATH
+        ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, "booking.db")
+        : path.join(__dirname, "booking.db"),
       driver: sqlite3.Database,
     });
 

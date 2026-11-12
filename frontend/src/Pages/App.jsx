@@ -8,7 +8,6 @@ import About from "./About.jsx";
 import Layout from "../Layouts/Layouts.jsx";
 import NotFound from "./NotFound.jsx";
 import Admin from "./Admin.jsx";
-
 import { fetchStays } from "../services/StayApi.js";
 
 function App() {

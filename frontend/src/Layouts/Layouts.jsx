@@ -10,9 +10,9 @@ function Layout() {
           <LocaLogo />
 
           <div className="site-nav__links">
-            <Link to="/" className="site-nav__link">
+            <a href="/#stays" className="site-nav__link">
               Explore Stays
-            </Link>
+            </a>
             <Link to="/about" className="site-nav__link">
               Our Story
             </Link>
@@ -28,21 +28,39 @@ function Layout() {
       {/* FOOTER */}
       <footer className="site-footer">
         <div className="site-footer__content">
-          <Link to="/" className="site-footer__logo">
-            loca.
-          </Link>
+          <div className="site-footer__brand">
+            <Link to="/" className="site-footer__logo">
+              loca.
+            </Link>
 
-          <p className="site-footer__tagline">Stay local. Feel connected.</p>
+            <p className="site-footer__description">
+              Local stays, thoughtfully chosen.
+            </p>
+
+            <p className="site-footer__location">Stockholm, Sweden</p>
+          </div>
 
           <div className="site-footer__links">
-            <Link to="/">Explore Stays</Link>
+            <h3>Explore</h3>
+            <a href="/#stays">Explore Stays</a>
             <Link to="/about">Our Story</Link>
+          </div>
+
+          <div className="site-footer__contact">
+            <p className="site-footer__label">CONNECT</p>
+
+            <h3>Questions about your stay?</h3>
+
+            <p>Have a question or need a hand? Send us an email.</p>
+
+            <a href="mailto:farideh.pakdaman@yh.nackademin.se">Email us ↗</a>
           </div>
         </div>
 
-        <p className="site-footer__copyright">
-          © {new Date().getFullYear()} Loca. A student project.
-        </p>
+        <div className="site-footer__bottom">
+          <p>© {new Date().getFullYear()} Loca. All rights reserved.</p>
+          <p>Made with ♥ by Frida Pakdaman</p>
+        </div>
       </footer>
     </div>
   );

@@ -1,0 +1,10 @@
+
+node_modules/
+
+.env
+.env.*
+
+!.env.example
+
+/backend/booking.db
+/backend/booking-backup.db
